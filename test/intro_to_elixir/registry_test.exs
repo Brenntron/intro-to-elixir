@@ -11,8 +11,9 @@ defmodule IntroToElixir.RegistryTest do
   end
 
   setup do
+    {:ok, sup} = IntroToElixir.Bucket.Supervisor.start_link
     {:ok, manager} = GenEvent.start_link
-    {:ok, registry} = IntroToElixir.Registry.start_link(manager)
+    {:ok, registry} = IntroToElixir.Registry.start_link(manager, sup)
 
     GenEvent.add_mon_handler(manager, Forwarder, self())
     {:ok, registry: registry}
@@ -42,5 +43,14 @@ defmodule IntroToElixir.RegistryTest do
 
     Agent.stop(bucket)
     assert_receive {:exit, "shopping", ^bucket}
+  end
+
+  test "removes bucket on crash", %{registry: registry} do
+    IntroToElixir.Registry.create(registry, "shopping")
+    {:ok, bucket} = IntroToElixir.Registry.lookup(registry, "shopping")
+
+    Process.exit(bucket, :shutdown)
+    assert_receive {:exit, "shopping", ^bucket}
+    assert IntroToElixir.Registry.lookup(registry, "shopping") == :error
   end
 end

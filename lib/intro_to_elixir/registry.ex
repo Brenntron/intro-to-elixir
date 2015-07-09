@@ -6,8 +6,8 @@ defmodule IntroToElixir.Registry do
   @doc """
   Starts the registry.
   """
-  def start_link(event_manager, opts \\ []) do
-    GenServer.start_link(__MODULE__, event_manager, opts)
+  def start_link(event_manager, buckets, opts \\ []) do
+    GenServer.start_link(__MODULE__, {event_manager, buckets}, opts)
   end
 
   @doc """
@@ -32,10 +32,10 @@ defmodule IntroToElixir.Registry do
 
   ## Server Callbacks
 
-  def init(events) do
+  def init({events, buckets}) do
     names = HashDict.new
     refs  = HashDict.new
-    {:ok, %{names: names, refs: refs, events: events}}
+    {:ok, %{names: names, refs: refs, events: events, buckets: buckets}}
   end
 
   def handle_call({:lookup, name}, _from, state) do
@@ -46,7 +46,7 @@ defmodule IntroToElixir.Registry do
     if HashDict.get(state.names, name) do
       {:norely, state}
     else
-      {:ok, pid} = IntroToElixir.Bucket.start_link()
+      {:ok, pid} = IntroToElixir.Bucket.Supervisor.start_bucket(state.buckets)
       ref   = Process.monitor(pid)
       refs  = HashDict.put(state.refs, ref, name)
       names = HashDict.put(state.names, name, pid)
