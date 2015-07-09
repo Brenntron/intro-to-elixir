@@ -1,4 +1,4 @@
-defmodule IntroToElixir.Bucket.Supervisor do
+defmodule ITE.Bucket.Supervisor do
   use Supervisor
 
   def start_link(opts \\ []) do
@@ -11,7 +11,7 @@ defmodule IntroToElixir.Bucket.Supervisor do
 
   def init(:ok) do
     children = [
-      worker(IntroToElixir.Bucket, [], restart: :temporary)
+      worker(ITE.Bucket, [], restart: :temporary)
       ]
 
     supervise(children, strategy: :simple_one_for_one)

@@ -1,4 +1,4 @@
-defmodule IntroToElixirTest do
+defmodule ITETest do
   use ExUnit.Case
 
   test "the truth" do

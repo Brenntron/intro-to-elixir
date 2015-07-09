@@ -1,4 +1,4 @@
-defmodule IntroToElixir.Bucket do
+defmodule ITE.Bucket do
   @doc """
   Starts a new bucket.
   """
@@ -21,7 +21,7 @@ defmodule IntroToElixir.Bucket do
   end
 
   @doc """
-  Deletes 'key' fmokom 'bucket'.
+  Deletes 'key' from 'bucket'.
 
   Returns the current value of 'key', if 'key' exists.
   """

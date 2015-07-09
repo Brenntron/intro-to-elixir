@@ -1,4 +1,4 @@
-defmodule IntroToElixir.Registry do
+defmodule ITE.Registry do
   use GenServer
 
   ## Client API
@@ -46,7 +46,7 @@ defmodule IntroToElixir.Registry do
     if HashDict.get(state.names, name) do
       {:norely, state}
     else
-      {:ok, pid} = IntroToElixir.Bucket.Supervisor.start_bucket(state.buckets)
+      {:ok, pid} = ITE.Bucket.Supervisor.start_bucket(state.buckets)
       ref   = Process.monitor(pid)
       refs  = HashDict.put(state.refs, ref, name)
       names = HashDict.put(state.names, name, pid)
